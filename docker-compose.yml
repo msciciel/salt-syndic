@@ -1,0 +1,39 @@
+version: '2'
+services:
+  salt:
+    image: salt/syndic
+    hostname: salt
+    volumes:
+      - ./srv/salt/:/srv/salt/:rw
+      - ./srv/pillar/:/srv/pillar/:ro
+      - ../salt-formula/salt:/srv/salt/salt/:ro
+    environment:
+      - SALT_MASTER_ENABLE=1
+
+  syndic:
+    image: salt/syndic
+    hostname: syndic
+    volumes:
+      - ./srv/salt/:/srv/salt/:rw
+      - ./srv/pillar/:/srv/pillar/:ro
+      - ../salt-formula/:/srv/salt/salt/:ro
+
+  minion1:
+    image: salt/syndic
+    hostname: minion1
+    environment:
+      - SALT_MASTER=syndic
+
+  minion2:
+    image: salt/syndic
+    hostname: minion2
+    environment:
+      - SALT_MASTER=syndic
+
+  minion3:
+    image: salt/syndic
+    hostname: minion3
+
+  minion4:
+    image: salt/syndic
+    hostname: minion4
