@@ -1,4 +1,4 @@
-base:
+prod:
   'syndic':
     - salt.master
     - salt.syndic

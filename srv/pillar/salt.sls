@@ -27,8 +27,17 @@ salt:
     fileserver_backend:
       - roots
     file_roots:
-      base:
-        - /srv/salt/
+      prod:
+        - /srv/salt/prod/states
+        - /srv/salt/prod/common
+        - /srv/formulas/prod/salt-formula/
+      itg:
+        - /srv/salt/itg/states
+        - /srv/salt/itg/common
+        - /srv/formulas/itg/salt-formula/
+
     pillar_roots:
       base:
-        - /srv/pillar
+        - /srv/pillar/base/
+        - /srv/pillar/common/
+

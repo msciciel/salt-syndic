@@ -4,19 +4,14 @@ services:
     image: salt/syndic
     hostname: salt
     volumes:
-      - ./srv/salt/:/srv/salt/:rw
-      - ./srv/pillar/:/srv/pillar/:ro
-      - ../salt-formula/salt:/srv/salt/salt/:ro
+      - ./srv/salt/:/srv/salt/prod/common:ro
+      - ./srv/pillar/:/srv/pillar/base:ro
     environment:
       - SALT_MASTER_ENABLE=1
 
   syndic:
     image: salt/syndic
     hostname: syndic
-    volumes:
-      - ./srv/salt/:/srv/salt/:rw
-      - ./srv/pillar/:/srv/pillar/:ro
-      - ../salt-formula/:/srv/salt/salt/:ro
 
   minion1:
     image: salt/syndic
