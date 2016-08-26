@@ -2,17 +2,14 @@ worker_threads: 4
 open_mode: True
 auto_accept: True
 file_roots:
-  prod:
-    - /srv/salt/prod/states
-    - /srv/salt/prod/common
-    - /srv/formulas/prod/salt-formula/
-  itg:
-    - /srv/salt/itg/states
-    - /srv/salt/itg/common
-    - /srv/formulas/itg/salt-formula/
+  base:
+    - /srv/salt/base/states
+    - /srv/salt/base/common
+    - /srv/formulas/salt-formula
+    - /srv/formulas/users-formula
 
 pillar_roots:
   base:
-    - /srv/pillar/base/
-    - /srv/pillar/common/
+    - /srv/pillar/base
+    - /srv/pillar/common
 

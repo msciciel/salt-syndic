@@ -4,8 +4,8 @@ services:
     image: salt/syndic
     hostname: salt
     volumes:
-      - ./srv/salt/:/srv/salt/prod/common:ro
-      - ./srv/pillar/:/srv/pillar/base:ro
+      - ./srv/salt/:/srv/salt/base/common:ro
+      - ./srv/pillar/:/srv/pillar/common:ro
     environment:
       - SALT_MASTER_ENABLE=1
 
