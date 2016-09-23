@@ -3,13 +3,12 @@ open_mode: True
 auto_accept: True
 file_roots:
   base:
-    - /srv/salt/base/states
-    - /srv/salt/base/common
-    - /srv/formulas/salt-formula
-    - /srv/formulas/users-formula
+    - /srv/local/salt
+    - /srv/salt/base/salt-formula
+    - /srv/salt/base/users-formula
+    - /srv/salt/base/git-formula
 
 pillar_roots:
   base:
-    - /srv/pillar/base
-    - /srv/pillar/common
+    - /srv/local/pillar/
 

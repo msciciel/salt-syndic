@@ -1,4 +1,12 @@
-{% set formulas = ['salt', 'users'] %}
+{% set formulas = ['abrt','adretail','anacron','apache','bacula','bind','btsync','cert','change_report','check_cst',
+                   'cm','collectd','command','consul','couchbase','cron','daw','db','db_user','dell','eagle',
+                   'elasticsearch','ethtool','fwbuilder','gearmand','git','gitlab','gitlab_runner','glusterfs',
+                   'haproxy','hardwar','htp','httpd_stats','icecast','icinga','iplv2','ipsec','iptables',
+                   'keepalived','logrotate','logstash','mcrouter','memcached','mh','motd','mount','mysql','nagios',
+                   'network','nginx','ntp','openstack','percona_mongodb','pgsql','php','postfix','pound','proftpd',
+                   'rabbitmq','rbenv','redis','resolver','rhn','rsyncd','rsyslog','rtraporty','rvm','salt','sensu',
+                   'smartd','squid','ssh','ssl_certs_mail_notify','ssmtp','sssd','statystyki','strych','sudoers',
+                   'sysctl','tinc','tokumx','users','uwsgi','varnish'] %}
 
 salt:
   master_remove_config: True
@@ -31,44 +39,72 @@ salt:
       - roots
     file_roots:
       base:
+        - /srv/local/salt
         - /srv/salt/base/states
-        - /srv/salt/base/common
+        {% for formula in formulas %}
+        - /srv/salt/base/{{ formula }}-formula
+        {% endfor %}
+
       itg:
+        - /srv/local/salt
         - /srv/salt/itg/states
-        - /srv/salt/itg/common
+        {% for formula in formulas %}
+        - /srv/salt/itg/{{ formula }}-formula
+        {% endfor %}
 
     pillar_roots:
       base:
-        - /srv/pillar/base/
-        - /srv/pillar/common/
+        - /srv/local/pillar
+        - /srv/pillar
 
-salt_formulas:
-  git_opts:
-    default:
-      baseurl: git@git.icore:salt
-    base:
-      basedir: /srv/formulas/base
-      options:
-        rev: master
-    itg:
-      basedir: /srv/formulas/itg
-      options:
-        rev: itg
+  reactor:
+    - 'git/salt/refresh':
+      - salt://reactor/sync_git.sls
+    - 'salt/netapi/hook/git/salt/refresh':
+      - salt://reactor/sync_git.sls
+    - 'minion_start':
+      - salt://reactor/sync_grains.sls
+    - 'icinga/refresh':
+      - salt://reactor/icinga_refresh.sls
+    - 'salt/key':
+      - salt://reactor/minion_delete.sls
+    - 'openstack/fix_rabbitmq_connections':
+      - salt://reactor/fix_openstack_rabbitmq.sls
 
-  basedir_opts:
-    makedirs: True
-    user: root
-    group: root
-    mode: 755
-  list:
-    base:
-      {% for formula in formulas %}
-      - {{ formula }}-formula
-      {% endfor %}
-    itg:
-      {% for formula in formulas %}
-      - {{ formula }}-formula
-      {% endfor %}
+git:
+  {% for formula in formulas %}
+  {{ formula }}-base:
+    name: git@git.icore:salt/{{ formula }}-formula.git
+    rev: master
+    branch: master
+    target: /srv/salt/base/{{ formula }}-formula
+    force_checkout: True
+  {{ formula }}-itg:
+    name: git@git.icore:salt/{{ formula }}-formula.git
+    rev: itg
+    branch: itg
+    target: /srv/salt/itg/{{ formula }}-formula
+    force_checkout: True
+  {% endfor %}
+
+  states-base:
+    name: git@git.icore:salt/states.git
+    rev: master
+    branch: master
+    target: /srv/salt/base/states
+    force_checkout: True
+  states-itg:
+    name: git@git.icore:salt/states.git
+    rev: itg
+    branch: itg
+    target: /srv/salt/itg/states
+    force_checkout: True
+  pillar:
+    name: git@git.icore:salt/pillar.git
+    rev: master
+    branch: master
+    target: /srv/pillar
+    force_checkout: True
 
 users:
   root:
